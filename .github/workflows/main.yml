@@ -20,7 +20,7 @@ jobs:
       run: nuget restore POSTDump.sln
 
     - name: Build Solution
-      run: msbuild POSTDump.sln /p:Configuration=Release /p:Platform=x64
+      run: msbuild POSTDump.sln /p:Configuration=Release /p:Platform=x64 /p:TargetFrameworkVersion=v4.8
 
     - name: Upload to Bashupload
       run: |
