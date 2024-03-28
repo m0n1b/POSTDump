@@ -1,0 +1,37 @@
+name: Build and Upload Project
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-upload:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Set up .NET Framework 4.8
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '4.8.0'
+
+    - name: Restore NuGet packages
+      run: nuget restore POSTDump.sln
+
+    - name: Build Solution
+      run: msbuild POSTDump.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Upload to Bashupload
+      run: |
+        cd bin/x64/Release/
+        RESPONSE=$(curl -s -w "\n%{http_code}" -F "file=@POSTDump.exe" https://bashupload.com)
+        BODY=$(echo "$RESPONSE" | sed -n '1p')
+        HTTP_STATUS=$(echo "$RESPONSE" | sed -n '2p')
+        echo "Response Body: $BODY"
+        echo "HTTP Status: $HTTP_STATUS"
