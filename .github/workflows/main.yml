@@ -21,7 +21,10 @@ jobs:
 
     - name: Build Solution
       run: msbuild POSTDump.sln /p:Configuration=Release /p:Platform=x64 /p:TargetFrameworkVersion=v4.8
-
+    - name: tree
+      run: |
+          tree ./
+          dir
     - name: Upload to Bashupload
       run: |
         cd bin/x64/Release/
